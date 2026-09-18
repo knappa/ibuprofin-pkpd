@@ -151,7 +151,7 @@ should be confirmed).
   `docs/MODEL.md` draft, and a short `docs/SOURCES_REVIEW.md` recording what
   was checked, conflicts found, and how they were resolved.
 
-### Phase 1: Numerical core
+### Phase 1: Numerical core (DONE 2026-09-18)
 - RK45 solver with dose events.
 - Model defined from a declarative description (states, parameters, RHS), so
   the R/S extension can be added later without rewriting the solver.
@@ -163,6 +163,11 @@ should be confirmed).
   reproduces source-reported typical values at reference weight/age.
 
 ### Phase 2: Model validation
+- Open question from Phase 1 smoke test: a typical 70 kg adult given 300 mg
+  tablet fasted gets Cmax ~17.6 mg/L, below the morse2022 Table 4 median
+  (24.1 mg/L; 10-90%: 13.3-40.8). Inside the interval, but investigate
+  (typical value vs. median of a variable population; NFM vs. total body
+  weight scaling) before accepting.
 - Simulate the Phase 0 validation scenarios for adults and children; compare
   Cmax, Tmax, AUC, and PD time courses against published means and ranges.
   Record results, including failures, in `docs/VALIDATION.md`.
