@@ -175,7 +175,11 @@ should be confirmed).
   the independent studies. Where a scenario cannot be validated, the page
   says so.
 
-### Phase 3: User interface
+### Phase 3: User interface (DONE 2026-09-18)
+- Built as planned except: charts are hand-written SVG (no uPlot), and
+  analgesia is shown as % reduction in pain score, so no baseline pain
+  input is needed. Run locally with `npm run serve`, then open
+  http://localhost:8000.
 - Patient panel: age, weight (with growth-chart default), baseline
   temperature for the fever model; out-of-range warnings.
 - Dose entry in mg or mg/kg (converted and displayed both ways).

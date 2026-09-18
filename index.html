@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Ibuprofen PK-PD Simulator</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="src/ui/styles.css">
+  <script type="module" src="src/ui/app.js"></script>
+</head>
+<body>
+  <header class="page-header">
+    <h1>Ibuprofen PK-PD Simulator</h1>
+    <p class="lede">
+      Simulate ibuprofen blood levels and effects for a typical patient, and
+      experiment with dose size and timing. Every model parameter is taken
+      from a cited study; see <a href="docs/MODEL.md">model</a>,
+      <a href="docs/SOURCES_REVIEW.md">sources</a> and
+      <a href="docs/VALIDATION_FINDINGS.md">validation</a>.
+    </p>
+    <p class="disclaimer" role="note">
+      <strong>For education only.</strong> This is a model of a typical
+      patient, not medical advice. Do not use it to choose doses. Follow the
+      product label or a clinician's directions.
+    </p>
+  </header>
+
+  <main class="layout">
+    <section class="controls" aria-label="Inputs">
+      <fieldset>
+        <legend>Patient</legend>
+        <div class="field-row">
+          <label>Age
+            <span class="input-pair">
+              <input id="age-years" type="number" min="0" max="110" step="1" inputmode="numeric"> y
+              <input id="age-months" type="number" min="0" max="11" step="1" inputmode="numeric"> mo
+            </span>
+          </label>
+        </div>
+        <div class="field-row">
+          <label>Sex (for typical weight only)
+            <select id="sex">
+              <option value="unspecified">Not specified</option>
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+            </select>
+          </label>
+        </div>
+        <div class="field-row">
+          <label>Weight
+            <span class="input-pair">
+              <input id="weight" type="number" min="1" step="0.1" inputmode="decimal">
+              <select id="weight-unit" aria-label="Weight unit">
+                <option value="lb">lb</option>
+                <option value="kg">kg</option>
+              </select>
+            </span>
+          </label>
+          <button id="typical-weight" type="button" class="link-button">Use typical weight for age</button>
+          <p id="weight-hint" class="hint"></p>
+        </div>
+        <div class="field-row">
+          <label>Starting temperature (fever model)
+            <span class="input-pair">
+              <input id="baseline-temperature" type="number" step="0.1" inputmode="decimal">
+              <span id="baseline-temperature-unit"></span>
+            </span>
+          </label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Dosing schedule</legend>
+        <div class="presets" id="presets" aria-label="Example schedules"></div>
+        <div class="regimen">
+          <label>Dose
+            <span class="input-pair">
+              <input id="regimen-amount" type="number" min="0" step="any" inputmode="decimal">
+              <select id="regimen-unit" aria-label="Dose unit">
+                <option value="mg">mg</option>
+                <option value="mgkg">mg/kg</option>
+              </select>
+            </span>
+          </label>
+          <label>Every
+            <span class="input-pair"><input id="regimen-interval" type="number" min="0.5" step="0.5" inputmode="decimal"> h</span>
+          </label>
+          <label>Number of doses
+            <input id="regimen-count" type="number" min="1" max="60" step="1" inputmode="numeric">
+          </label>
+          <label>First dose at
+            <span class="input-pair"><input id="regimen-start" type="number" min="0" step="0.5" inputmode="decimal"> h</span>
+          </label>
+          <label>Form
+            <select id="regimen-formulation"></select>
+          </label>
+          <label class="checkbox"><input id="regimen-fed" type="checkbox"> With food</label>
+          <div class="button-row">
+            <button id="regimen-replace" type="button">Replace schedule</button>
+            <button id="regimen-append" type="button" class="secondary">Add to schedule</button>
+          </div>
+        </div>
+
+        <table class="dose-table">
+          <caption>Doses</caption>
+          <thead>
+            <tr><th scope="col">Time (h)</th><th scope="col">Amount (mg)</th><th scope="col">Form</th><th scope="col">Food</th><th scope="col"><span class="visually-hidden">Remove</span></th></tr>
+          </thead>
+          <tbody id="dose-rows"></tbody>
+        </table>
+        <div class="button-row">
+          <button id="add-dose" type="button" class="secondary">Add one dose</button>
+          <button id="clear-doses" type="button" class="secondary">Clear all</button>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Display</legend>
+        <div class="field-row">
+          <label>Simulate for
+            <span class="input-pair">
+              <input id="end-time" type="number" min="1" max="720" step="1" inputmode="numeric" placeholder="auto"> h
+            </span>
+          </label>
+          <p class="hint">Leave blank to run 12 h past the last dose.</p>
+        </div>
+        <div class="field-row">
+          <label>Temperature
+            <select id="temperature-unit">
+              <option value="F">&deg;F</option>
+              <option value="C">&deg;C</option>
+            </select>
+          </label>
+          <label>Concentration
+            <select id="concentration-unit">
+              <option value="mgL">mg/L</option>
+              <option value="umolL">&micro;mol/L</option>
+            </select>
+          </label>
+        </div>
+      </fieldset>
+    </section>
+
+    <section class="results" aria-label="Results">
+      <div id="messages" class="messages" aria-live="polite"></div>
+
+      <div class="scenario-bar">
+        <div class="button-row">
+          <button id="pin" type="button">Pin for comparison</button>
+          <button id="unpin" type="button" class="secondary" hidden>Remove pinned</button>
+          <button id="share" type="button" class="secondary">Copy link</button>
+          <button id="export-csv" type="button" class="secondary">Download CSV</button>
+        </div>
+        <div class="button-row">
+          <label>Saved scenarios
+            <select id="saved-list"><option value="">Choose...</option></select>
+          </label>
+          <button id="load-saved" type="button" class="secondary">Load</button>
+          <button id="delete-saved" type="button" class="secondary">Delete</button>
+          <button id="save" type="button" class="secondary">Save current...</button>
+        </div>
+        <p id="scenario-status" class="hint" aria-live="polite"></p>
+      </div>
+
+      <div class="metrics-wrap">
+        <table class="metrics" id="metrics"></table>
+      </div>
+
+      <div id="charts" class="charts"></div>
+    </section>
+  </main>
+
+  <footer class="page-footer">
+    <p>
+      Runs entirely in your browser. Nothing you enter is sent anywhere; saved
+      scenarios stay in this browser's local storage, and shared links keep
+      the scenario after the <code>#</code>, which browsers do not send to the
+      server.
+    </p>
+  </footer>
+</body>
+</html>

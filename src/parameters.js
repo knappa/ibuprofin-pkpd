@@ -387,9 +387,18 @@ export const PD = {
 };
 
 // ---------------------------------------------------------------------------
-// Source populations for each PD endpoint, used to label plots as
-// "extrapolated" outside these ranges.
+// Source populations, used to label plots as "extrapolated" outside these
+// ranges.
 // ---------------------------------------------------------------------------
+
+export const PK_SOURCE_POPULATION = {
+  description: "Healthy adults 18-49 y, 49-116 kg",
+  minAgeYears: 18,
+  minWeightKg: 49,
+  maxWeightKg: 116,
+  source: "morse2022",
+  location: "Table 1 (median and range)",
+};
 
 export const PD_SOURCE_POPULATIONS = {
   cox: {
@@ -416,6 +425,7 @@ export const PD_SOURCE_POPULATIONS = {
     minAgeYears: 4,
     maxAgeYears: 16,
     minWeightKg: 25,
+    maxWeightKg: 70,
     source: "troconiz2000",
   },
 };
@@ -453,6 +463,27 @@ export const DOSE_LIMITS = {
     source: "labelCaldolor",
     location: "Section 2 Dosage and Administration",
     notes: "IV product label; used as the cap on the mg/kg limit for heavier children.",
+  },
+  pediatricMaxAgeYears: {
+    value: 17,
+    units: "years",
+    description: "Oldest age covered by the pediatric daily limit ('6 months to 17 years of age')",
+    source: "labelCaldolor",
+    location: "Section 2 Dosage and Administration",
+  },
+  otcAdultMinAgeYears: {
+    value: 12,
+    units: "years",
+    description: "Youngest age for adult OTC directions ('adults and children 12 years and over')",
+    source: "labelAdvil",
+    location: "Drug Facts, Directions",
+  },
+  pediatricSingleDosePerKg: {
+    value: 10,
+    units: "mg/kg",
+    description: "Highest single dose on the pediatric Rx label (fever >= 102.5 F, or analgesia)",
+    source: "labelIbuprofenSuspensionRx",
+    location: "Dosage and Administration, Pediatric Patients",
   },
   pediatricDosesPerDay: {
     value: 4,
