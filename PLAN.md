@@ -162,7 +162,7 @@ should be confirmed).
   model returns to baseline temperature after drug washout; covariate scaling
   reproduces source-reported typical values at reference weight/age.
 
-### Phase 2: Model validation
+### Phase 2: Model validation (DONE 2026-09-18; see docs/VALIDATION_FINDINGS.md)
 - Open question from Phase 1 smoke test: a typical 70 kg adult given 300 mg
   tablet fasted gets Cmax ~17.6 mg/L, below the morse2022 Table 4 median
   (24.1 mg/L; 10-90%: 13.3-40.8). Inside the interval, but investigate

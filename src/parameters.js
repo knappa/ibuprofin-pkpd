@@ -67,7 +67,9 @@ export const PK = {
       "where the adult fat-free-mass equation is not valid. For a 70 kg, " +
       "1.76 m male, NFM equals the reference and the two agree exactly. " +
       "Independent check: anderson2019 pooled 30 studies (neonates to " +
-      "adults) using weight-based allometry and found 3.81 L/h/70 kg.",
+      "adults) using weight-based allometry and found 3.81 L/h/70 kg. " +
+      "REVIEW-LATER (adult-cmax-bias): predicted adult Cmax runs about " +
+      "20-25% below observed means; see docs/VALIDATION_FINDINGS.md.",
   },
 
   centralVolume: {

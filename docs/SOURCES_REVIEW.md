@@ -181,6 +181,9 @@ tags this decision with the same marker so it can be found by searching for
 
 - [ ] REVIEW-LATER: confirm analgesia equation form with the authors
       (standard Hill form adopted; see "Analgesia equation form").
+- [ ] REVIEW-LATER (adult-cmax-bias): predicted peaks run about 20-25% below
+      observed adult means, and morse2022 Table 4 does not follow from its
+      Table 3. See docs/VALIDATION_FINDINGS.md section 2.
 - [ ] blain2002 repeated-dose sampling: which daily dose preceded the 2.5 h
       sample.
 - [ ] WHO growth-standard redistribution terms (before public deployment).
