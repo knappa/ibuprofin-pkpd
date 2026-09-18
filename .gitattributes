@@ -1,0 +1,2 @@
+# Keep source data files byte-identical to the published originals
+data/growth/*.csv -text

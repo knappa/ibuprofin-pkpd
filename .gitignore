@@ -1,0 +1,4 @@
+# Publisher PDFs (copyrighted); see references/README.md
+references/*.pdf
+
+node_modules/
