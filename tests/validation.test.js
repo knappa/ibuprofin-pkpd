@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { runValidation, VERDICT } from "../scripts/validation.mjs";
+import { runValidation, VERDICT } from "../src/validation.js";
 
 // Comparisons that fail for documented reasons (docs/VALIDATION_FINDINGS.md).
 // If one of these starts passing, update this list and the findings.

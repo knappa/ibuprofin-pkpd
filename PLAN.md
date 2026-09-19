@@ -193,7 +193,9 @@ should be confirmed).
 - Scenario comparison: pin a run and overlay the next one; save named
   scenarios to localStorage.
 
-### Phase 4: Documentation in the page
+### Phase 4: Documentation in the page (DONE 2026-09-18)
+- Built as planned except: equations use native MathML instead of KaTeX (no
+  third-party code), and the validation table is computed live in the page.
 - "Model and References" section auto-generated from the parameter table:
   equations (rendered with vendored KaTeX), parameter table with DOI links,
   source populations, assumptions and limitations, and a description of the

@@ -255,3 +255,58 @@ button.link-button { background: none; border: none; color: var(--accent); paddi
   .dose-table input[type="number"] { width: 4.2em; }
   .dose-table select { max-width: 7em; }
 }
+
+/* ---------------------------------------------------------------------------
+   Model documentation section
+   --------------------------------------------------------------------------- */
+.docs {
+  max-width: 1280px;
+  margin: 8px auto 0;
+  padding: 16px;
+  border-top: 1px solid var(--border);
+}
+.docs h2 { margin: 0 0 8px; font-size: 1.35rem; }
+.docs h3 { margin: 28px 0 8px; font-size: 1.1rem; }
+.docs h4 { margin: 16px 0 4px; font-size: 0.95rem; }
+.docs > p, .docs section > p { max-width: 75ch; }
+.docs-hint { color: var(--text-secondary); font-size: 0.85rem; margin: 4px 0 0; max-width: 75ch; }
+.docs a { word-break: break-word; }
+
+.model-diagram { display: block; width: 100%; max-width: 720px; height: auto; margin: 12px 0; }
+.diagram-box { stroke-width: 1.5; }
+.diagram-box.pk { fill: var(--note-bg); stroke: var(--series-1); }
+.diagram-box.pd { fill: var(--surface); stroke: var(--series-2); }
+.diagram-box.sink { fill: var(--surface); stroke: var(--baseline); stroke-dasharray: 4 3; }
+.diagram-title { fill: var(--text-primary); font-size: 14px; font-weight: 600; }
+.diagram-subtitle, .diagram-label { fill: var(--text-secondary); font-size: 12px; }
+.diagram-arrow { stroke: var(--text-muted); stroke-width: 1.5; }
+.diagram-arrowhead { fill: var(--text-muted); }
+
+.equation-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px 10px;
+  margin-bottom: 10px;
+  overflow-x: auto;
+}
+.equation-block h4 { margin: 0 0 4px; }
+.equation-block math { font-size: 1.1rem; margin: 6px 0; }
+
+.table-scroll { overflow-x: auto; margin-bottom: 8px; }
+.docs-table { border-collapse: collapse; width: 100%; font-size: 0.82rem; background: var(--surface); }
+.docs-table th, .docs-table td { text-align: left; vertical-align: top; padding: 5px 8px; border-bottom: 1px solid var(--gridline); }
+.docs-table thead th { color: var(--text-muted); font-weight: 500; white-space: nowrap; }
+.docs-table td:nth-child(2) { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.verdict { font-weight: 600; font-size: 0.75rem; padding: 1px 6px; border-radius: 4px; border: 1px solid; white-space: nowrap; }
+.verdict.pass { border-color: #0ca30c; }
+.verdict.acceptable { border-color: var(--warning-border); }
+.verdict.fail { border-color: var(--error-border); }
+.verdict.info { border-color: var(--baseline); color: var(--text-secondary); }
+
+.references { padding-left: 1.4em; font-size: 0.85rem; }
+.references li { margin-bottom: 6px; max-width: 95ch; }
+.references li:target, .references li:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ref-key { color: var(--text-muted); font-family: ui-monospace, monospace; font-size: 0.8rem; }
+.ref-access { color: var(--text-muted); }

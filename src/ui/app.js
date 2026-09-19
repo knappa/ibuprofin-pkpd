@@ -19,6 +19,7 @@ import {
 } from "../scenario.js";
 import { doseWarnings, extrapolationNotes, inputErrors, maxDailyTotals } from "../warnings.js";
 import { createLineChart } from "./plots.js";
+import { renderDocs } from "./docs.js";
 
 const STORAGE_KEY = "ibuprofen-pkpd.saved-scenarios";
 const RECOMPUTE_DELAY_MS = 120;
@@ -36,7 +37,13 @@ const state = {
   lastResult: null,
 };
 
-const hashScenario = decodeScenario(window.location.hash.slice(1));
+// Scenario links look like "#s=<encoded>", so they never collide with
+// in-page section anchors.
+const SCENARIO_HASH_PREFIX = "#s=";
+const scenarioHash = (scenario) => `${SCENARIO_HASH_PREFIX}${encodeScenario(scenario)}`;
+const hashScenario = window.location.hash.startsWith(SCENARIO_HASH_PREFIX)
+  ? decodeScenario(window.location.hash.slice(SCENARIO_HASH_PREFIX.length))
+  : null;
 if (hashScenario) {
   state.scenario = hashScenario;
   state.weightEditedByUser = true;
@@ -503,7 +510,7 @@ function recompute() {
     : null;
   renderMetrics(summarize(result, scenario.doses, scenario.patient.weightKg), pinnedSummary);
 
-  history.replaceState(null, "", `#${encodeScenario(scenario)}`);
+  history.replaceState(null, "", scenarioHash(scenario));
 }
 
 // ---------------------------------------------------------------------------
@@ -535,7 +542,7 @@ byId("unpin").addEventListener("click", () => {
 });
 
 byId("share").addEventListener("click", async () => {
-  const url = `${window.location.origin}${window.location.pathname}#${encodeScenario(state.scenario)}`;
+  const url = `${window.location.origin}${window.location.pathname}${scenarioHash(state.scenario)}`;
   try {
     await navigator.clipboard.writeText(url);
     status("Link copied. The scenario is stored after the # and is not sent to the server.");
@@ -643,3 +650,20 @@ writePatientInputs();
 renderDoseTable();
 renderSavedList();
 recompute();
+
+// The documentation runs the validation simulations; render it after the
+// simulator has painted so the page appears immediately.
+setTimeout(() => renderDocs(byId("model")), 0);
+
+// In-page links scroll instead of changing the hash, which holds the scenario.
+document.addEventListener("click", (event) => {
+  const link = event.target.closest?.('a[href^="#"]');
+  if (!link) return;
+  const target = byId(decodeURIComponent(link.getAttribute("href").slice(1)));
+  if (!target) return;
+  event.preventDefault();
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+  if (target.matches("h1, h2, h3, h4, li, section")) target.setAttribute("tabindex", "-1");
+  target.focus({ preventScroll: true });
+});
