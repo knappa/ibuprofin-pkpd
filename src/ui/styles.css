@@ -310,3 +310,16 @@ button.link-button { background: none; border: none; color: var(--accent); paddi
 .references li:target, .references li:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
 .ref-key { color: var(--text-muted); font-family: ui-monospace, monospace; font-size: 0.8rem; }
 .ref-access { color: var(--text-muted); }
+
+.plot-area svg:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+.data-table-details { margin-top: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; }
+.data-table-details summary { cursor: pointer; font-weight: 500; }
+.data-table-details caption { text-align: left; color: var(--text-secondary); font-size: 0.8rem; padding: 6px 0; }
+.data-table-details .docs-table td { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+@media print {
+  .controls .button-row, .presets, .scenario-bar, .data-table-details summary { display: none; }
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .chart, fieldset, .equation-block { break-inside: avoid; }
+}

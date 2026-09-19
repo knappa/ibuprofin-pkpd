@@ -88,7 +88,21 @@ export function createLineChart(container, config) {
   plotArea.className = "plot-area";
   figure.appendChild(plotArea);
 
-  const svg = svgElement("svg", { role: "img", "aria-label": config.title }, plotArea);
+  const svg = svgElement(
+    "svg",
+    {
+      role: "img",
+      tabindex: 0,
+      "aria-label": `${config.title}. Use the left and right arrow keys to read values over time.`,
+    },
+    plotArea,
+  );
+  // Screen-reader announcement of the value under the keyboard crosshair.
+  const liveRegion = document.createElement("p");
+  liveRegion.className = "visually-hidden";
+  liveRegion.setAttribute("aria-live", "polite");
+  plotArea.appendChild(liveRegion);
+  let keyboardTime = null;
   const gridLayer = svgElement("g", { class: "grid" }, svg);
   const doseLayer = svgElement("g", { class: "dose-markers" }, svg);
   const lineLayer = svgElement("g", { class: "lines" }, svg);
@@ -243,6 +257,11 @@ export function createLineChart(container, config) {
     }
     dotLayer.setAttribute("visibility", "visible");
     tooltip.hidden = false;
+    if (document.activeElement === svg) {
+      liveRegion.textContent = [...tooltip.children]
+        .map((row) => [...row.childNodes].map((node) => node.textContent).filter(Boolean).join(" "))
+        .join(", ");
+    }
     const flip = x > MARGIN.left + geometry.innerWidth / 2;
     tooltip.style.left = flip ? "" : `${x + 12}px`;
     tooltip.style.right = flip ? `${plotArea.clientWidth - x + 12}px` : "";
@@ -256,6 +275,30 @@ export function createLineChart(container, config) {
   };
   svg.addEventListener("pointermove", (event) => config.onHoverTime?.(timeFromPointer(event)));
   svg.addEventListener("pointerleave", () => config.onHoverTime?.(null));
+
+  // Keyboard: arrows step through time (Shift for larger steps), Home/End
+  // jump to the ends, Escape clears.
+  svg.addEventListener("keydown", (event) => {
+    if (!data) return;
+    const smallStep = Math.max(0.25, data.endTime / 96);
+    const step = event.shiftKey ? smallStep * 8 : smallStep;
+    const current = keyboardTime ?? 0;
+    const moves = {
+      ArrowRight: () => Math.min(data.endTime, current + step),
+      ArrowLeft: () => Math.max(0, current - step),
+      Home: () => 0,
+      End: () => data.endTime,
+      Escape: () => null,
+    };
+    if (!(event.key in moves)) return;
+    event.preventDefault();
+    keyboardTime = moves[event.key]();
+    config.onHoverTime?.(keyboardTime);
+  });
+  svg.addEventListener("blur", () => {
+    keyboardTime = null;
+    config.onHoverTime?.(null);
+  });
 
   new ResizeObserver(() => draw()).observe(plotArea);
 

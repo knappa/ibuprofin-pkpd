@@ -3,7 +3,7 @@
 
 import { simulate } from "../model.js";
 import { CONSTANTS, FORMULATIONS } from "../parameters.js";
-import { peak, areaUnderCurve } from "../metrics.js";
+import { peak, areaUnderCurve, valueAt } from "../metrics.js";
 import {
   celsiusToFahrenheit,
   decodeScenario,
@@ -510,8 +510,55 @@ function recompute() {
     : null;
   renderMetrics(summarize(result, scenario.doses, scenario.patient.weightKg), pinnedSummary);
 
+  renderDataTable();
   history.replaceState(null, "", scenarioHash(scenario));
 }
+
+/** Table of all outputs at regular times; rendered only while it is open. */
+function renderDataTable() {
+  const details = byId("data-table-details");
+  const container = byId("data-table");
+  if (!details.open || !state.lastResult) return;
+  const { result, endTimeHours } = state.lastResult;
+  const stepHours = endTimeHours <= 30 ? 0.5 : endTimeHours <= 60 ? 1 : 2;
+  const headers = [
+    "Time (h)",
+    `Plasma (${concentrationUnitLabel()})`,
+    `Effect site (${concentrationUnitLabel()})`,
+    "COX-1 (%)",
+    "COX-2 (%)",
+    "Pain relief (%)",
+    `Temperature (${temperatureUnitLabel()})`,
+  ];
+  const tableElement = document.createElement("table");
+  tableElement.className = "docs-table";
+  const caption = tableElement.createCaption();
+  caption.textContent = `Simulated values every ${stepHours} h (download the CSV for full resolution).`;
+  const headRow = tableElement.createTHead().insertRow();
+  for (const header of headers) {
+    const cell = document.createElement("th");
+    cell.scope = "col";
+    cell.textContent = header;
+    headRow.appendChild(cell);
+  }
+  const body = tableElement.createTBody();
+  const at = (series, time) => valueAt(result.times, series, time);
+  for (let time = 0; time <= endTimeHours + 1e-9; time += stepHours) {
+    const values = [
+      formatNumber(time, 1),
+      formatNumber(displayConcentration(at(result.plasmaConcentration, time)), 1),
+      formatNumber(displayConcentration(at(result.effectSiteConcentration, time)), 1),
+      formatNumber(at(result.cox1InhibitionPercent, time), 0),
+      formatNumber(at(result.cox2InhibitionPercent, time), 0),
+      formatNumber(at(result.analgesiaFraction, time) * 100, 0),
+      formatNumber(displayTemperature(at(result.temperatureC, time)), 1),
+    ];
+    const row = body.insertRow();
+    for (const value of values) row.insertCell().textContent = value;
+  }
+  container.replaceChildren(tableElement);
+}
+byId("data-table-details").addEventListener("toggle", renderDataTable);
 
 // ---------------------------------------------------------------------------
 // Scenario tools: pin, share, CSV, saved scenarios (browser storage only)

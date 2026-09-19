@@ -202,7 +202,12 @@ should be confirmed).
   planned R/S extension.
 - Disclaimer: educational use; not for clinical dosing decisions.
 
-### Phase 5: Packaging and polish
+### Phase 5: Packaging and polish (DONE 2026-09-18)
+- README, `.nojekyll` for GitHub Pages, keyboard-operable charts with
+  screen-reader announcements, data-table view, print styles, and a final
+  privacy check (only same-origin requests; no network APIs in the code).
+- License: Apache 2.0. Remote: github.com/knappa/ibuprofin-pkpd. Remaining:
+  push and enable GitHub Pages (owner action).
 - Local static serving (`python -m http.server`); later GitHub Pages. Verify with browser dev tools that
   no third-party requests occur and nothing is sent to the server beyond the
   static file fetches.

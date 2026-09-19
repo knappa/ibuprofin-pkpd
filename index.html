@@ -34,8 +34,8 @@
         <div class="field-row">
           <label>Age
             <span class="input-pair">
-              <input id="age-years" type="number" min="0" max="110" step="1" inputmode="numeric"> y
-              <input id="age-months" type="number" min="0" max="11" step="1" inputmode="numeric"> mo
+              <input id="age-years" aria-label="Age, years" type="number" min="0" max="110" step="1" inputmode="numeric"> y
+              <input id="age-months" aria-label="Age, additional months" type="number" min="0" max="11" step="1" inputmode="numeric"> mo
             </span>
           </label>
         </div>
@@ -169,6 +169,11 @@
       </div>
 
       <div id="charts" class="charts"></div>
+
+      <details id="data-table-details" class="data-table-details">
+        <summary>Show the values as a table</summary>
+        <div id="data-table" class="table-scroll"></div>
+      </details>
     </section>
   </main>
 

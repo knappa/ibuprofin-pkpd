@@ -66,7 +66,7 @@ function listFiles(dirPath) {
 }
 
 test("source and documentation files are ASCII only", () => {
-  const files = [...listFiles("src"), ...listFiles("docs"), ...listFiles("tests"), "PLAN.md"];
+  const files = [...listFiles("src"), ...listFiles("docs"), ...listFiles("tests"), ...listFiles("scripts"), "PLAN.md", "README.md", "index.html"];
   for (const filePath of files) {
     const text = readFileSync(filePath, "utf8");
     const match = text.match(/[^\x00-\x7F]/);
